@@ -1,0 +1,15 @@
+[
+{
+  "modid": "entitycap",
+  "name": "EntityCap",
+  "description": "FIFO total entity capping (dropped items, passive mobs, hostile mobs) for Minecraft 1.7.10 servers. When a category exceeds its configured cap, the oldest loaded entity is despawned.",
+  "version": "${modVersion}",
+  "mcversion": "1.7.10",
+  "url": "",
+  "authors": ["chubbymomo"],
+  "credits": "Momo Softworks",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

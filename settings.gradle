@@ -1,0 +1,16 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven {
+            name = 'GTNH Maven'
+            url = uri('https://nexus.gtnewhorizons.com/repository/public/')
+        }
+    }
+}
+
+plugins {
+    // Lets Gradle auto-provision the Java 8 toolchain RFG needs.
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+}
+
+rootProject.name = 'EntityCap'

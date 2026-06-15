@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'com.gtnewhorizons.retrofuturagradle' version '1.4.9'
+}
+
+group = 'net.momosoftworks.entitycap'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+// Most RFG configuration lives here; Forge for 1.7.10 is provided automatically.
+minecraft {
+    mcVersion = '1.7.10'
+    username = 'Developer'
+    injectedTags.put('VERSION', project.version)
+}
+
+repositories {
+    maven {
+        name = 'GTNH Maven'
+        url = uri('https://nexus.gtnewhorizons.com/repository/public/')
+    }
+}
+
+dependencies {
+}
+
+// Substitute the version from gradle into mcmod.info
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('mcmod.info') {
+        expand 'modVersion': project.version
+    }
+}

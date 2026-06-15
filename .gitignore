@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+
+# RetroFuturaGradle decompile/run workspace
+run/
+runClient/
+runServer/
+
+# IDE
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+bin/
+out/
+eclipse/
+
+# OS cruft
+.DS_Store
+
+# Local Claude Code state
+.claude/
