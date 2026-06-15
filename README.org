@@ -1,0 +1,84 @@
+#+TITLE: EntityCap
+#+AUTHOR: chubbymomo (Momo Softworks)
+#+OPTIONS: toc:nil num:nil
+
+Total entity capping for *Minecraft 1.7.10* (Forge), built with
+[[https://github.com/GTNewHorizons/RetroFuturaGradle][RetroFuturaGradle]].
+Keeps loaded-entity counts under control without despawning things in
+players' faces.
+
+* Features
+- *Per-player budgets* — each entity is charged to its nearest player
+  within ~claimRadius~; the total allowance scales with player count.
+- *Unattended caps* — a separate, generous cap for entities with no player
+  nearby (chunkloaded farms, spawn chunks, abandoned bases).
+- *Dimension ceiling* — an absolute per-category emergency cap.
+- *No-poof bubble* — nothing within ~protectedRadius~ of a player is ever
+  culled; eviction always removes the entity *farthest* from its nearest
+  player first (oldest as a tiebreaker).
+- *Per-entity dials* — every registered entity gets an individual cap,
+  auto-populated from the registry on launch (=-1= = governed by its
+  category). Set one to =0= to blacklist a spawn outright.
+- *Exemptions* — tamed pets, custom-named entities, villagers, built golems
+  (incl. modded ~EntityGolem~), and bosses are never culled.
+
+* Requirements
+- JDK 8 (the build provisions it automatically via the toolchain).
+- A JDK 17 to *run Gradle 8.8* (RFG requirement). Point ~JAVA_HOME~ at it.
+
+* Building
+#+begin_src sh
+# Build everything (produces the reobfuscated jar)
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk ./gradlew build
+
+# Or just (re)produce the production jar
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk ./gradlew reobfJar
+#+end_src
+
+Output:
+- =build/libs/EntityCap-1.0.0.jar=     ← ship this (reobfuscated to SRG)
+- =build/libs/EntityCap-1.0.0-dev.jar= ← dev mappings, do *not* ship
+
+Test in a dev environment:
+#+begin_src sh
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk ./gradlew runClient   # or runServer
+#+end_src
+
+* Installing
+Drop =EntityCap-1.0.0.jar= into the server's =mods/= folder. The config is
+generated at =config/entitycap.cfg= on first launch, with every registered
+entity listed under its category.
+
+* Configuration
+Edit =config/entitycap.cfg=, then run =/entitycap reload= in-game — no
+restart needed. The file is only written at startup and on reload, so it is
+safe to live-edit.
+
+Key options in the =[general]= section (defaults shown):
+
+| Option                | Default | Meaning                                            |
+|-----------------------+---------+----------------------------------------------------|
+| ~enabled~             | true    | Master toggle                                      |
+| ~scanIntervalTicks~   | 100     | Ticks between sweeps (20 = 1s)                      |
+| ~protectedRadius~     | 32      | No-poof bubble around each player (blocks)         |
+| ~claimRadius~         | 128     | How close a player must be to "attend" an entity   |
+| ~*CapPerPlayer~       | 200/40/70   | item/passive/hostile budget per player         |
+| ~unattended*Cap~      | 500/250/300 | item/passive/hostile cap with no player near   |
+| ~itemCap/passiveCap/hostileCap~ | 1500/800/800 | per-dimension emergency ceiling     |
+| ~exemptTamed/Named/Villagers/Golems~ | true | exemption toggles                    |
+| ~excludedNames~       | (empty) | entity names never culled                          |
+| ~extraHostileNames~ / ~extraPassiveNames~ | (empty) | reclassify edge-case mobs    |
+
+Per-entity dials live under ~entitycaps.{item,passive,hostile,other}~.
+
+* In-game commands
+Requires permission level 2 (op).
+
+| Command             | Description                                          |
+|---------------------+------------------------------------------------------|
+| =/entitycap status= | Caps, radii, diagnostics, per-dimension counts       |
+| =/entitycap names=  | Distinct currently-loaded entity names + counts      |
+| =/entitycap reload= | Re-read the config and re-populate dials live        |
+
+* License
+See [[file:LICENSE][LICENSE]].
